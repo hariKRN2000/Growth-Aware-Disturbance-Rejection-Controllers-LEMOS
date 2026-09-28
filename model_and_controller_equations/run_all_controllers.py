@@ -1,5 +1,7 @@
 import numpy as np
+from scipy.optimize import minimize
 import time
+from collections import deque
 from .TCS_model_growth_equations import run_TCS_model
 
 
@@ -104,7 +106,7 @@ def pid_controller_growth_aware(protein, set_point, gain, error_array,
 
         time_green = gain * (p_term + i_term + d_term)
 
-    elif controller_mode == "aPID": # to switch to adaptive PID
+    elif controller_mode == "PID-GS": # to switch to gain-scheduled PID
 
         # Proportional Term
         p_term = error
@@ -167,7 +169,7 @@ def pid_controller_growth_aware(protein, set_point, gain, error_array,
 
         time_green = time_green_PID + time_green_FF
 
-    elif controller_mode == "aPID-FF": # switch to combined adaptive PID and Feed Forward
+    elif controller_mode == "PID-GS-FF": # switch to combined PID-GS and Feed Forward
         
         # PID input
         # Proportional Term
@@ -212,12 +214,16 @@ def pid_controller_growth_aware(protein, set_point, gain, error_array,
 def run_control(controller_type, total_time, set_point, initial_conditions, params, gain,
                 tau_I=1500, tau_D=120, integral_mode='model', perturb_percent=50, perturb_time=600,
                 new_t_final=1800, C_max=713694117.0, initial_controller="PID", switch_to_controller="PID", FF_gain=1,
-                print_perturb_message=False):
+                print_perturb_message=False, params_after_perturb=None):
 
  
     time_dark = 1
-    state = initial_conditions
+    state = np.asarray(initial_conditions, dtype=float).copy()
     current_time = 0
+
+    # Plant parameters used by the ODE model.
+    # Start every trajectory with the same nominal parameters.
+    active_params = params
 
     protein_concentrations = [state[8]]
     solution_array = np.array([state])
@@ -276,6 +282,10 @@ def run_control(controller_type, total_time, set_point, initial_conditions, para
                     # Reset the appropriate states to the perturbation point
                     state[9] = solution_array[perturb_time_index][9]
                     state[10] = 0 # Integral windup reset
+
+                    # Introduce plant uncertainty only when the disturbance occurs.
+                    if params_after_perturb is not None:
+                        active_params = params_after_perturb
                     
                     perturbed = True  # Set flag to avoid further perturbations
 
@@ -308,7 +318,7 @@ def run_control(controller_type, total_time, set_point, initial_conditions, para
             for phase, duration in [('dark', time_dark), ('green', time_green), ('red', time_red), ('dark', time_dark)]:
                 if duration > 0:
                     t_phase = np.linspace(current_time, current_time + duration, 100)
-                    sol = run_TCS_model(state, t_phase, params, set_point, input=phase)
+                    sol = run_TCS_model(state, t_phase, active_params, set_point, input=phase)
                     state = sol.y[:, -1]
                     current_time += duration
                     time_array = np.concatenate((time_array, sol.t))

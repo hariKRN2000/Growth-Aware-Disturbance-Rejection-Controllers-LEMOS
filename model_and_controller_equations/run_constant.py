@@ -6,7 +6,7 @@ import scipy.integrate as scint
 from .TCS_model_growth_equations import run_TCS_model
 
 def run_constant(total_time, initial_conditions, params, constant_input = 'green', growth_perturb = False,
-                 perturb_percent=50, perturb_time=600, new_t_final=1800, duty_cycle=None):
+                 perturb_percent=50, perturb_time=600, new_t_final=1800):
 
     # Simulation parameters
     total_time = total_time  # Total simulation time in minutes
@@ -34,23 +34,13 @@ def run_constant(total_time, initial_conditions, params, constant_input = 'green
         protein_concentration = state[8]
         
         # set the input times: 
-
-        if duty_cycle is not None:
-            if not 0 <= duty_cycle <= 100:
-                raise ValueError("duty_cycle must be between 0 and 100")
-
-            control_period = 8  # minutes
-            time_green = control_period * duty_cycle / 100
-            time_red = control_period - time_green
-
-
-        elif constant_input.lower() == 'green':
+        if constant_input.lower() == 'green':
             time_green, time_red = 8, 0
 
-        elif constant_input.lower() == 'red':
+        if constant_input.lower() == 'red':
             time_green, time_red = 0, 8
 
-        elif constant_input.lower() == 'dark':
+        if constant_input.lower() == 'dark':
             time_green, time_red, time_dark = 0, 0, 5
 
         
