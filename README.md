@@ -31,7 +31,7 @@
 │
 ├── perturbation_simulation_fixed_gain_PID.ipynb    # Simulates growth perturbations under fixed-gain PID
 ├── perturbation_simulation_all_controllers.ipynb   # Compares controllers under the same perturbation conditions
-├── plot_performance_metrics.ipynb                  # Generates performance metric heatmaps (rise time, settling time, ITAE)
+├── plot_performance_metrics.ipynb                  # Generates performance metric heatmaps (ITAE)
 └── signal_analysis.py                              # Helper functions for computing control performance metrics
 ```
 
