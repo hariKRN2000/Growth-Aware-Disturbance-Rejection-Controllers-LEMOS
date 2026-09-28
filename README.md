@@ -40,8 +40,8 @@
 ## Installation
 
 ```bash
-git clone https://github.com/hariKRN2000/Gain-Scheduled-Disturbance-Rejection-Controllers-LEMOS.git
-cd Gain-Scheduled-Disturbance-Rejection-Controllers-LEMOS
+git clone https://github.com/hariKRN2000/Growth-Aware-Disturbance-Rejection-Controllers-LEMOS.git
+cd Growth-Aware-Disturbance-Rejection-Controllers-LEMOS
 pip install numpy scipy pandas lmfit matplotlib 
 ```
 
