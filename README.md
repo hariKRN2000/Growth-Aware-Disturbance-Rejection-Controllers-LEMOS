@@ -1,6 +1,4 @@
-# Gain-Scheduled Optogenetic Feedback for Disturbance Rejection in Bacterial Batch Cultures
-
-This repository contains the simulation code and experimental data accompanying the paper by Hari Namboothiri and Chelsea Hu, submitted to CDC 2026.
+# Growth-Aware Optogenetic Control for Cross-Scale Disturbance Rejection in Bacterial Batch Cultures
 
 ---
 
@@ -11,10 +9,13 @@ This repository contains the simulation code and experimental data accompanying 
 ├── model_and_controller_equations/
 │   ├── TCS_model_growth_equations.py   # Multiscale ODE (GEAGS) model of the TCS optogenetic circuit 
 │   ├── run_constant.py                 # Runs the model under constant light input (open loop)
-│   └── run_all_controllers.py          # Implements all controllers (P, PI, PD, PID, PID-GS, FF, PID-GS-FF) and the closed-loop simulation loop
+│   └── run_all_controllers.py          # Implements all controllers (P, PI, PD, PID, aPID, FF, aPID-FF) and the closed-loop simulation loop
 │
 ├── frequency response analysis/
 │   └── Sim_TF_Bode_C_as_Disturbance.ipynb   # Frequency response analysis treating cell growth as a disturbance input
+│ 
+├── robustness analysis/
+│   └── robustness_analysis_all_controllers_same_IC.ipynb   # Monte Carlo analysis of all the controllers at different operating regimes
 │
 ├── experiment_data/
 │   └── P-FL_OD_run_data_*.csv          # Closed-loop controller experimental data from previous work
